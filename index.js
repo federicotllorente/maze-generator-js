@@ -27,38 +27,53 @@ class Cell {
     this.x = x
     this.y = y
 
+    this.walls = {
+      top: true,
+      right: true,
+      bottom: true,
+      left: true
+    }
+
     this.show = function() {
       // Draw top wall
-      drawLine(
-        this.x * CELL_SIZE,
-        this.y * CELL_SIZE,
-        (this.x + 1) * CELL_SIZE,
-        this.y * CELL_SIZE
-      )
-
-      // Draw bottom wall
-      drawLine(
-        this.x * CELL_SIZE,
-        (this.y + 1) * CELL_SIZE,
-        (this.x + 1) * CELL_SIZE,
-        (this.y + 1) * CELL_SIZE
-      )
-
-      // Draw left wall
-      drawLine(
-        this.x * CELL_SIZE,
-        this.y * CELL_SIZE,
-        this.x * CELL_SIZE,
-        (this.y + 1) * CELL_SIZE
-      )
+      if (this.walls.top) {
+        drawLine(
+          this.x * CELL_SIZE,
+          this.y * CELL_SIZE,
+          (this.x + 1) * CELL_SIZE,
+          this.y * CELL_SIZE
+        )
+      }
 
       // Draw right wall
-      drawLine(
-        (this.x + 1) * CELL_SIZE,
-        this.y * CELL_SIZE,
-        (this.x + 1) * CELL_SIZE,
-        (this.y + 1) * CELL_SIZE
-      )
+      if (this.walls.right) {
+        drawLine(
+          (this.x + 1) * CELL_SIZE,
+          this.y * CELL_SIZE,
+          (this.x + 1) * CELL_SIZE,
+          (this.y + 1) * CELL_SIZE
+        )
+      }
+
+      // Draw bottom wall
+      if (this.walls.bottom) {
+        drawLine(
+          this.x * CELL_SIZE,
+          (this.y + 1) * CELL_SIZE,
+          (this.x + 1) * CELL_SIZE,
+          (this.y + 1) * CELL_SIZE
+        )
+      }
+
+      // Draw left wall
+      if (this.walls.left) {
+        drawLine(
+          this.x * CELL_SIZE,
+          this.y * CELL_SIZE,
+          this.x * CELL_SIZE,
+          (this.y + 1) * CELL_SIZE
+        )
+      }
     }
   }
 }
