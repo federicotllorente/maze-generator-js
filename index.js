@@ -10,6 +10,17 @@ const CELL_SIZE = window.innerHeight < window.innerWidth
 let int, canvas
 const grid = []
 
+function drawLine(startX, startY, endX, endY) {
+  const ctx = canvas.getContext('2d')
+  ctx.strokeStyle = 'rgb(255, 255, 255)'
+  ctx.lineWidth = 1
+
+  ctx.beginPath()
+  ctx.moveTo(startX, startY)
+  ctx.lineTo(endX, endY)
+  ctx.stroke()
+}
+
 class Cell {
   constructor(x, y) {
     // Location
@@ -17,37 +28,37 @@ class Cell {
     this.y = y
 
     this.show = function() {
-      // Print cell walls
-      const ctx = canvas.getContext('2d')
-      // ctx.fillStyle = 'rgb(255, 0, 255)'
-      ctx.strokeStyle = 'rgb(255, 255, 255)'
-      ctx.lineWidth = 1
-      // ctx.strokeRect(this.x * CELL_SIZE, this.y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
-      // ctx.fillRect(this.x * CELL_SIZE, this.y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1)
-
       // Draw top wall
-      ctx.beginPath()
-      ctx.moveTo(this.x * CELL_SIZE, this.y * CELL_SIZE)
-      ctx.lineTo((this.x + 1) * CELL_SIZE, this.y * CELL_SIZE)
-      ctx.stroke()
+      drawLine(
+        this.x * CELL_SIZE,
+        this.y * CELL_SIZE,
+        (this.x + 1) * CELL_SIZE,
+        this.y * CELL_SIZE
+      )
 
       // Draw bottom wall
-      ctx.beginPath()
-      ctx.moveTo(this.x * CELL_SIZE, (this.y + 1) * CELL_SIZE)
-      ctx.lineTo((this.x + 1) * CELL_SIZE, (this.y + 1) * CELL_SIZE)
-      ctx.stroke()
+      drawLine(
+        this.x * CELL_SIZE,
+        (this.y + 1) * CELL_SIZE,
+        (this.x + 1) * CELL_SIZE,
+        (this.y + 1) * CELL_SIZE
+      )
 
       // Draw left wall
-      ctx.beginPath()
-      ctx.moveTo(this.x * CELL_SIZE, this.y * CELL_SIZE)
-      ctx.lineTo(this.x * CELL_SIZE, (this.y + 1) * CELL_SIZE)
-      ctx.stroke()
+      drawLine(
+        this.x * CELL_SIZE,
+        this.y * CELL_SIZE,
+        this.x * CELL_SIZE,
+        (this.y + 1) * CELL_SIZE
+      )
 
       // Draw right wall
-      ctx.beginPath()
-      ctx.moveTo((this.x + 1) * CELL_SIZE, this.y * CELL_SIZE)
-      ctx.lineTo((this.x + 1) * CELL_SIZE, (this.y + 1) * CELL_SIZE)
-      ctx.stroke()
+      drawLine(
+        (this.x + 1) * CELL_SIZE,
+        this.y * CELL_SIZE,
+        (this.x + 1) * CELL_SIZE,
+        (this.y + 1) * CELL_SIZE
+      )
     }
   }
 }
