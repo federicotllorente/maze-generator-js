@@ -134,9 +134,9 @@ function setup() {
   ctx.fillRect(0, 0, GRID_ROWS * CELL_SIZE, GRID_COLS * CELL_SIZE)
 
   // Create cells
-  for (let i = 0; i < GRID_COLS; i++) {
-    for (let j = 0; j < GRID_ROWS; j++) {
-      const cell = new Cell(i, j)
+  for (let i = 0; i < GRID_ROWS; i++) {
+    for (let j = 0; j < GRID_COLS; j++) {
+      const cell = new Cell(j, i)
       grid.push(cell)
     }
   }
