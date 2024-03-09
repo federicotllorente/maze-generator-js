@@ -1,7 +1,7 @@
 const LOOP_INTERVAL = 300
 
 const GRID_COLS = 20
-const GRID_ROWS = 20
+const GRID_ROWS = GRID_COLS
 
 const CELL_SIZE = window.innerHeight < window.innerWidth
   ? (window.innerHeight - 16) / GRID_ROWS
@@ -28,6 +28,40 @@ function getIndex(x, y) {
   return x + y * GRID_COLS
 }
 
+function removeWalls(a, b) {
+  const x = a.x - b.x
+
+  if (x === 1) {
+    // LEFT NEIGHBOR
+    a.walls.left = false
+    b.walls.right = false
+    return
+  }
+
+  if (x === -1) {
+    // RIGHT NEIGHBOR
+    a.walls.right = false
+    b.walls.left = false
+    return
+  }
+
+  const y = a.y - b.y
+
+  if (y === 1) {
+    // TOP NEIGHBOR
+    a.walls.top = false
+    b.walls.bottom = false
+    return
+  }
+
+  if (y === -1) {
+    // BOTTOM NEIGHBOR
+    a.walls.bottom = false
+    b.walls.top = false
+    return
+  }
+}
+
 class Cell {
   constructor(x, y) {
     // Location
@@ -43,6 +77,12 @@ class Cell {
 
     this.wasVisited = false
     this.unvisitedNeighbors = []
+
+    this.highlight = function() {
+      const ctx = canvas.getContext('2d')
+      ctx.fillStyle = 'rgb(100, 155, 100)'
+      ctx.fillRect(this.x * CELL_SIZE, this.y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1)
+    }
 
     this.show = function() {
       if (this.wasVisited) {
@@ -150,9 +190,12 @@ function loop() {
   }
 
   current.wasVisited = true
+  current.highlight()
+
   const next = current.checkNeighbors()
   if (next) {
     next.wasVisited = true
+    removeWalls(current, next)
     current = next
   }
 }
