@@ -1,6 +1,6 @@
-const LOOP_INTERVAL = 300
+const LOOP_INTERVAL = 10
 
-const GRID_COLS = 20
+const GRID_COLS = 50
 const GRID_ROWS = GRID_COLS
 
 const CELL_SIZE = window.innerHeight < window.innerWidth
@@ -8,6 +8,7 @@ const CELL_SIZE = window.innerHeight < window.innerWidth
   : (window.innerWidth - 16) / GRID_COLS
 
 const grid = []
+const stack = []
 const visitedCells = []
 const unvisitedCells = []
 let int, canvas, current
@@ -76,7 +77,6 @@ class Cell {
     }
 
     this.wasVisited = false
-    this.unvisitedNeighbors = []
 
     this.highlight = function() {
       const ctx = canvas.getContext('2d')
@@ -85,12 +85,6 @@ class Cell {
     }
 
     this.show = function() {
-      if (this.wasVisited) {
-        const ctx = canvas.getContext('2d')
-        ctx.fillStyle = 'rgb(100, 0, 255)'
-        ctx.fillRect(this.x * CELL_SIZE, this.y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1)
-      }
-
       // Draw top wall
       if (this.walls.top) {
         drawLine(
@@ -130,32 +124,42 @@ class Cell {
           (this.y + 1) * CELL_SIZE
         )
       }
+
+      if (this.wasVisited) {
+        const ctx = canvas.getContext('2d')
+        ctx.fillStyle = 'rgb(100, 0, 255)'
+        ctx.fillRect(this.x * CELL_SIZE, this.y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1)
+      }
     }
 
     this.checkNeighbors = function() {
+      const neighbors = []
+
       const top = grid[getIndex(this.x, this.y - 1)]
       const right = grid[getIndex(this.x + 1, this.y)]
       const bottom = grid[getIndex(this.x, this.y + 1)]
       const left = grid[getIndex(this.x - 1, this.y)]
 
       if (top && !top.wasVisited) {
-        this.unvisitedNeighbors.push(top)
+        neighbors.push(top)
       }
 
       if (right && !right.wasVisited) {
-        this.unvisitedNeighbors.push(right)
+        neighbors.push(right)
       }
 
       if (bottom && !bottom.wasVisited) {
-        this.unvisitedNeighbors.push(bottom)
+        neighbors.push(bottom)
       }
 
       if (left && !left.wasVisited) {
-        this.unvisitedNeighbors.push(left)
+        neighbors.push(left)
       }
 
-      if (this.unvisitedNeighbors.length) {
-        return this.unvisitedNeighbors[Math.floor(Math.random() * this.unvisitedNeighbors.length)]
+      if (neighbors.length > 0) {
+        return neighbors[Math.floor(Math.random() * neighbors.length)]
+      } else {
+        return undefined
       }
     }
   }
@@ -195,8 +199,14 @@ function loop() {
   const next = current.checkNeighbors()
   if (next) {
     next.wasVisited = true
+    stack.push(current)
     removeWalls(current, next)
     current = next
+  } else if (stack.length > 0) {
+    current = stack.pop()
+  } else {
+    console.log('DONE!')
+    clearInterval(int)
   }
 }
 
